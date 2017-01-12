@@ -126,7 +126,7 @@ matrix:
         - .mason/mason install cmake 3.7.1
         - export PATH=$(.mason/mason prefix cmake 3.7.1)/bin:$PATH
         - export CXXFLAGS="-fsanitize=address,integer,undefined"
-        - export LDFLAGS=-fsanitize=address,integer,undefined"
+        - export LDFLAGS="-fsanitize=address,integer,undefined"
       script:
         - nvm install 4
         - nvm use 4
