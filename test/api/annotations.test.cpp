@@ -70,11 +70,11 @@ TEST(Annotations, LineAnnotation) {
     test.checkRendering("line_annotation_max_zoom");
 }
 
-/*
+
 TEST(Annotations, FillAnnotation) {
     AnnotationTest test;
 
-    Polygon<double> polygon = {{ {{ { 0, 0 }, { 0, 45 }, { 45, 45 }, { 45, 0 } }} }};
+    Polygon<double> polygon = { {{ { 0, 0 }, { 0, 45 }, { 45, 45 }, { 45, 0 } }} };
     FillAnnotation annotation { polygon };
     annotation.color = Color::red();
 
@@ -99,7 +99,7 @@ TEST(Annotations, AntimeridianAnnotationSmall) {
     lineAnnotation.width = { 2 };
     test.map.addAnnotation(lineAnnotation);
 
-    Polygon<double> polygon = {{ {{ { antimeridian+10, 0 }, { antimeridian - 10, 10 }, { antimeridian-10, -10 } }} }};
+    Polygon<double> polygon = { {{ { antimeridian+10, 0 }, { antimeridian - 10, 10 }, { antimeridian-10, -10 } }} };
     FillAnnotation polygonAnnotation { polygon };
     polygonAnnotation.color = Color::blue();
     test.map.addAnnotation(polygonAnnotation);
@@ -120,7 +120,7 @@ TEST(Annotations, AntimeridianAnnotationLarge) {
     lineAnnotation.width = { 2 };
     test.map.addAnnotation(lineAnnotation);
 
-    Polygon<double> polygon = {{ {{ { antimeridian-10, 0 }, { -antimeridian+10, 10 }, { -antimeridian+10, -10 } }} }};
+    Polygon<double> polygon = { {{ { antimeridian-10, 0 }, { -antimeridian+10, 10 }, { -antimeridian+10, -10 } }} };
     FillAnnotation polygonAnnotation { polygon };
     polygonAnnotation.color = Color::blue();
     test.map.addAnnotation(polygonAnnotation);
@@ -131,7 +131,7 @@ TEST(Annotations, AntimeridianAnnotationLarge) {
 TEST(Annotations, OverlappingFillAnnotation) {
     AnnotationTest test;
 
-    Polygon<double> polygon = {{ {{ { 0, 0 }, { 0, 45 }, { 45, 45 }, { 45, 0 } }} }};
+    Polygon<double> polygon = { {{ { 0, 0 }, { 0, 45 }, { 45, 45 }, { 45, 0 } }} };
     FillAnnotation underlaidAnnotation { polygon };
     underlaidAnnotation.color = Color::green();
     FillAnnotation overlaidAnnotation { polygon };
@@ -146,7 +146,7 @@ TEST(Annotations, OverlappingFillAnnotation) {
 TEST(Annotations, StyleSourcedShapeAnnotation) {
     AnnotationTest test;
 
-    Polygon<double> polygon = {{ {{ { 0, 0 }, { 0, 45 }, { 45, 45 }, { 45, 0 } }} }};
+    Polygon<double> polygon = { {{ { 0, 0 }, { 0, 45 }, { 45, 45 }, { 45, 0 } }} };
 
     test.map.setStyleJSON(util::read_file("test/fixtures/api/annotation.json"));
     test.map.addAnnotation(StyleSourcedAnnotation { polygon, "annotation" });
@@ -172,7 +172,7 @@ TEST(Annotations, NonImmediateAdd) {
     test.map.setStyleJSON(util::read_file("test/fixtures/api/empty.json"));
     test::render(test.map, test.view);
 
-    Polygon<double> polygon = {{ {{ { 0, 0 }, { 0, 45 }, { 45, 45 }, { 45, 0 } }} }};
+    Polygon<double> polygon = { {{ { 0, 0 }, { 0, 45 }, { 45, 45 }, { 45, 0 } }} };
     FillAnnotation annotation { polygon };
     annotation.color = Color::red();
 
@@ -246,7 +246,7 @@ TEST(Annotations, UpdateLineAnnotationStyle) {
 TEST(Annotations, UpdateFillAnnotationGeometry) {
     AnnotationTest test;
 
-    FillAnnotation annotation { Polygon<double> {{ {{ { 0, 0 }, { 0, 45 }, { 45, 45 }, { 45, 0 } }} }} };
+    FillAnnotation annotation { Polygon<double> { {{ { 0, 0 }, { 0, 45 }, { 45, 45 }, { 45, 0 } }} } };
     annotation.color = Color::red();
 
     test.map.setStyleJSON(util::read_file("test/fixtures/api/empty.json"));
@@ -254,7 +254,7 @@ TEST(Annotations, UpdateFillAnnotationGeometry) {
 
     test::render(test.map, test.view);
 
-    annotation.geometry = Polygon<double> {{ {{ { 0, 0 }, { 0, 45 }, { 45, 0 } }} }};
+    annotation.geometry = Polygon<double> { {{ { 0, 0 }, { 0, 45 }, { 45, 0 } }} };
     test.map.updateAnnotation(fill, annotation);
     test.checkRendering("update_fill_geometry");
 }
@@ -262,7 +262,7 @@ TEST(Annotations, UpdateFillAnnotationGeometry) {
 TEST(Annotations, UpdateFillAnnotationStyle) {
     AnnotationTest test;
 
-    Polygon<double> polygon = {{ {{ { 0, 0 }, { 0, 45 }, { 45, 45 }, { 45, 0 } }} }};
+    Polygon<double> polygon = { {{ { 0, 0 }, { 0, 45 }, { 45, 45 }, { 45, 0 } }} };
     FillAnnotation annotation { polygon };
     annotation.color = Color::red();
 
@@ -432,7 +432,6 @@ TEST(Annotations, DebugEmpty) {
     test.checkRendering("debug_empty");
 }
 
-*/
 
 TEST(Annotations, DebugSparse) {
     // This test should only render the top right tile with the associated tile border, but no other
