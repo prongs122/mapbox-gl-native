@@ -147,7 +147,6 @@ matrix:
       addons: *clang39
       before_install:
         - git submodule update --init
-        - (cd .mason && git checkout master && git pull)
         - .mason/mason install clang++ 3.9.1
         - export PATH=$(.mason/mason prefix clang++ 3.9.1)/bin:$PATH
         - .mason/mason install cmake 3.7.1
