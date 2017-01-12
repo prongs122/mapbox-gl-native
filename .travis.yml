@@ -82,32 +82,32 @@ after_success:
 matrix:
   include:
     # LLVM 3.8.0 - clang-{format,tidy}
-    - os: linux
-      sudo: false
-      dist: trusty
-      language: cpp
-      env: _CXX=c++ _CC=cc
-      compiler: "check"
-      script:
-        - git fetch origin master:refs/remotes/origin/master
-        - make check
+    # - os: linux
+    #   sudo: false
+    #   dist: trusty
+    #   language: cpp
+    #   env: _CXX=c++ _CC=cc
+    #   compiler: "check"
+    #   script:
+    #     - git fetch origin master:refs/remotes/origin/master
+    #     - make check
 
-    # OSMesa - Node - Clang 3.8 - Debug
-    - os: linux
-      sudo: required
-      dist: trusty
-      language: node
-      compiler: "osmesa-node4-clang38-debug"
-      env: BUILDTYPE=Debug _CXX=clang++-3.8 _CC=clang-3.8 WITH_OSMESA=1
-      addons: *clang38
-      script:
-        - nvm install 4
-        - nvm use 4
-        - make node
-        - make test-node
-      after_script:
-        - ccache --show-stats
-        - ./platform/node/scripts/after_script.sh ${TRAVIS_JOB_NUMBER}
+    # # OSMesa - Node - Clang 3.8 - Debug
+    # - os: linux
+    #   sudo: required
+    #   dist: trusty
+    #   language: node
+    #   compiler: "osmesa-node4-clang38-debug"
+    #   env: BUILDTYPE=Debug _CXX=clang++-3.8 _CC=clang-3.8 WITH_OSMESA=1
+    #   addons: *clang38
+    #   script:
+    #     - nvm install 4
+    #     - nvm use 4
+    #     - make node
+    #     - make test-node
+    #   after_script:
+    #     - ccache --show-stats
+    #     - ./platform/node/scripts/after_script.sh ${TRAVIS_JOB_NUMBER}
 
     # EGL - Node - Clang 3.9 - Debug
     - os: linux
@@ -129,127 +129,127 @@ matrix:
       before_script:
         - mapbox_start_xvfb
       script:
-        - nvm install 4
-        - nvm use 4
-        - make node
-        - make test-node
+        - make linux
+        - make benchmark
+        - make test
+        - make run-test
       after_script:
         - ccache --show-stats
         - ./platform/node/scripts/after_script.sh ${TRAVIS_JOB_NUMBER}
 
-    # EGL - Node - Clang 3.8 - Debug
-    - os: linux
-      sudo: required
-      dist: trusty
-      language: node
-      compiler: "egl-node4-clang38-debug"
-      env: BUILDTYPE=Debug _CXX=clang++-3.8 _CC=clang-3.8 WITH_EGL=1
-      addons: *clang38
-      before_script:
-        - mapbox_start_xvfb
-      script:
-        - nvm install 4
-        - nvm use 4
-        - make node
-        - make test-node
-      after_script:
-        - ccache --show-stats
-        - ./platform/node/scripts/after_script.sh ${TRAVIS_JOB_NUMBER}
+    # # EGL - Node - Clang 3.8 - Debug
+    # - os: linux
+    #   sudo: required
+    #   dist: trusty
+    #   language: node
+    #   compiler: "egl-node4-clang38-debug"
+    #   env: BUILDTYPE=Debug _CXX=clang++-3.8 _CC=clang-3.8 WITH_EGL=1
+    #   addons: *clang38
+    #   before_script:
+    #     - mapbox_start_xvfb
+    #   script:
+    #     - nvm install 4
+    #     - nvm use 4
+    #     - make node
+    #     - make test-node
+    #   after_script:
+    #     - ccache --show-stats
+    #     - ./platform/node/scripts/after_script.sh ${TRAVIS_JOB_NUMBER}
 
-    # GLX - Node - Clang 3.8 - Release
-    - os: linux
-      sudo: required
-      dist: trusty
-      language: node
-      compiler: "glx-node4-clang38-release"
-      env: BUILDTYPE=Release _CXX=clang++-3.8 _CC=clang-3.8
-      addons: *clang38
-      before_script:
-        - export PACKAGE_JSON_VERSION=$(node -e "console.log(require('./package.json').version)")
-        - export PUBLISH=$([[ "${TRAVIS_TAG:-}" == "node-v${PACKAGE_JSON_VERSION}" ]] && echo true)
-        - mapbox_start_xvfb
-      script:
-        - nvm install 4
-        - nvm use 4
-        - make node
-        - make test-node
-      after_script:
-        - ccache --show-stats
-        - ./platform/node/scripts/after_script.sh ${TRAVIS_JOB_NUMBER}
-      after_success:
-        - ./platform/node/scripts/after_success.sh
+    # # GLX - Node - Clang 3.8 - Release
+    # - os: linux
+    #   sudo: required
+    #   dist: trusty
+    #   language: node
+    #   compiler: "glx-node4-clang38-release"
+    #   env: BUILDTYPE=Release _CXX=clang++-3.8 _CC=clang-3.8
+    #   addons: *clang38
+    #   before_script:
+    #     - export PACKAGE_JSON_VERSION=$(node -e "console.log(require('./package.json').version)")
+    #     - export PUBLISH=$([[ "${TRAVIS_TAG:-}" == "node-v${PACKAGE_JSON_VERSION}" ]] && echo true)
+    #     - mapbox_start_xvfb
+    #   script:
+    #     - nvm install 4
+    #     - nvm use 4
+    #     - make node
+    #     - make test-node
+    #   after_script:
+    #     - ccache --show-stats
+    #     - ./platform/node/scripts/after_script.sh ${TRAVIS_JOB_NUMBER}
+    #   after_success:
+    #     - ./platform/node/scripts/after_success.sh
 
-    # OSMesa - GCC 5 - Debug (Coverage)
-    # FIXME: https://github.com/mapbox/mapbox-gl-native/issues/6918
-    - os: linux
-      sudo: required
-      dist: trusty
-      language: cpp
-      compiler: "osmesa-gcc5-debug"
-      env: BUILDTYPE=Debug _CXX=g++-5 _CC=gcc-5 WITH_COVERAGE=1 WITH_OSMESA=1
-      addons: *gcc5
-      after_script:
-        - ccache --show-stats
-        - ./platform/linux/scripts/coveralls.sh
+    # # OSMesa - GCC 5 - Debug (Coverage)
+    # # FIXME: https://github.com/mapbox/mapbox-gl-native/issues/6918
+    # - os: linux
+    #   sudo: required
+    #   dist: trusty
+    #   language: cpp
+    #   compiler: "osmesa-gcc5-debug"
+    #   env: BUILDTYPE=Debug _CXX=g++-5 _CC=gcc-5 WITH_COVERAGE=1 WITH_OSMESA=1
+    #   addons: *gcc5
+    #   after_script:
+    #     - ccache --show-stats
+    #     - ./platform/linux/scripts/coveralls.sh
 
-    # OSMesa - GCC 5 - Release
-    - os: linux
-      sudo: required
-      dist: trusty
-      language: cpp
-      compiler: "osmesa-gcc5-release"
-      env: BUILDTYPE=Release _CXX=g++-5 _CC=gcc-5 WITH_OSMESA=1
-      addons: *gcc5
+    # # OSMesa - GCC 5 - Release
+    # - os: linux
+    #   sudo: required
+    #   dist: trusty
+    #   language: cpp
+    #   compiler: "osmesa-gcc5-release"
+    #   env: BUILDTYPE=Release _CXX=g++-5 _CC=gcc-5 WITH_OSMESA=1
+    #   addons: *gcc5
 
-    # OSMesa - Clang 3.8 - Debug
-    - os: linux
-      sudo: required
-      dist: trusty
-      language: cpp
-      compiler: "osmesa-clang38-debug"
-      env: BUILDTYPE=Debug _CXX=clang++-3.8 _CC=clang-3.8 WITH_OSMESA=1
-      addons: *clang38
+    # # OSMesa - Clang 3.8 - Debug
+    # - os: linux
+    #   sudo: required
+    #   dist: trusty
+    #   language: cpp
+    #   compiler: "osmesa-clang38-debug"
+    #   env: BUILDTYPE=Debug _CXX=clang++-3.8 _CC=clang-3.8 WITH_OSMESA=1
+    #   addons: *clang38
 
-    # OSMesa - Clang 3.8 - Release
-    - os: linux
-      sudo: required
-      dist: trusty
-      language: cpp
-      compiler: "osmesa-clang38-release"
-      env: BUILDTYPE=Release _CXX=clang++-3.8 _CC=clang-3.8 WITH_OSMESA=1
-      addons: *clang38
+    # # OSMesa - Clang 3.8 - Release
+    # - os: linux
+    #   sudo: required
+    #   dist: trusty
+    #   language: cpp
+    #   compiler: "osmesa-clang38-release"
+    #   env: BUILDTYPE=Release _CXX=clang++-3.8 _CC=clang-3.8 WITH_OSMESA=1
+    #   addons: *clang38
 
-    # Qt 4 - GCC 5 - Release
-    - os: linux
-      sudo: required
-      dist: trusty
-      language: cpp
-      compiler: "qt4-gcc5-release"
-      env: BUILDTYPE=Release _CXX=g++-5 _CC=gcc-5 WITH_QT_4=1
-      addons: *qt4
-      before_script:
-        - mapbox_start_xvfb
-        - mapbox_export_mesa_library_path
-      script:
-        - make qt-app
-        - LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so make run-qt-test-Memory.*:*.Load
+    # # Qt 4 - GCC 5 - Release
+    # - os: linux
+    #   sudo: required
+    #   dist: trusty
+    #   language: cpp
+    #   compiler: "qt4-gcc5-release"
+    #   env: BUILDTYPE=Release _CXX=g++-5 _CC=gcc-5 WITH_QT_4=1
+    #   addons: *qt4
+    #   before_script:
+    #     - mapbox_start_xvfb
+    #     - mapbox_export_mesa_library_path
+    #   script:
+    #     - make qt-app
+    #     - LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so make run-qt-test-Memory.*:*.Load
 
-    # Qt 5 - GCC 5 - Release
-    - os: linux
-      sudo: required
-      dist: trusty
-      language: cpp
-      compiler: "qt5-gcc5-release"
-      env: BUILDTYPE=Release _CXX=g++-5 _CC=gcc-5
-      addons: *qt5
-      before_script:
-        - mapbox_start_xvfb
-        - mapbox_export_mesa_library_path
-      script:
-        - make qt-app
-        - make qt-qml-app
-        - make qt-test
-        - scripts/valgrind.sh build/qt-linux-x86_64/Release/mbgl-test --gtest_filter=-*.Load
+    # # Qt 5 - GCC 5 - Release
+    # - os: linux
+    #   sudo: required
+    #   dist: trusty
+    #   language: cpp
+    #   compiler: "qt5-gcc5-release"
+    #   env: BUILDTYPE=Release _CXX=g++-5 _CC=gcc-5
+    #   addons: *qt5
+    #   before_script:
+    #     - mapbox_start_xvfb
+    #     - mapbox_export_mesa_library_path
+    #   script:
+    #     - make qt-app
+    #     - make qt-qml-app
+    #     - make qt-test
+    #     - scripts/valgrind.sh build/qt-linux-x86_64/Release/mbgl-test --gtest_filter=-*.Load
 
 cache:
   directories:
