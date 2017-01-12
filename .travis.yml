@@ -154,7 +154,7 @@ matrix:
         - export PATH=$(.mason/mason prefix cmake 3.7.1)/bin:$PATH
         - export CXXFLAGS="-fsanitize=address,integer,undefined"
         - export LDFLAGS="-fsanitize=address,integer,undefined"
-        - export LD_PRELOAD=$(.mason/mason prefix clang++ 3.9.1)/lib/clang/3.9.1/lib/linux/libclang_rt.asan-x86_64.so:$(.mason/mason prefix clang++ 3.9.1)/lib/clang/3.9.1/lib/linux/libclang_rt.uban-x86_64.so
+        - export LD_PRELOAD=$(.mason/mason prefix clang++ 3.9.1)/lib/clang/3.9.1/lib/linux/libclang_rt.asan-x86_64.so:$(.mason/mason prefix clang++ 3.9.1)/lib/clang/3.9.1/lib/linux/libclang_rt.ubsan-x86_64.so
       before_script:
         - mapbox_start_xvfb
       script:
