@@ -70,6 +70,7 @@ TEST(Annotations, LineAnnotation) {
     test.checkRendering("line_annotation_max_zoom");
 }
 
+/*
 TEST(Annotations, FillAnnotation) {
     AnnotationTest test;
 
@@ -431,6 +432,7 @@ TEST(Annotations, DebugEmpty) {
     test.checkRendering("debug_empty");
 }
 
+*/
 
 TEST(Annotations, DebugSparse) {
     // This test should only render the top right tile with the associated tile border, but no other
