@@ -7,13 +7,21 @@ addons:
     sources:
       - &common_sources [ 'ubuntu-toolchain-r-test', 'george-edison55-precise-backports' ]
     packages:
-      - &common_packages [ 'libllvm3.8v4', 'cmake', 'cmake-data' ]
+      - &common_packages [ 'libllvm3.8v4' ]
       - &clang38_packages [ 'clang-3.8', 'libstdc++-5-dev', 'libstdc++6' ]
       - &gcc5_packages [ 'gcc-5', 'g++-5' ]
       - &egl_packages [ 'libgles2-mesa-dev', 'libgbm-dev' ]
       - &glfw_packages [ 'libxrandr-dev', 'libxcursor-dev', 'libxinerama-dev' ]
 
 addons_shortcuts:
+  addons_clang39: &clang39
+    apt:
+      sources: [ 'ubuntu-toolchain-r-test', ]
+      packages:
+        - *common_packages
+        - ['libstdc++-5-dev', 'libstdc++6']
+        - *egl_packages
+        - *glfw_packages
   addons_clang38: &clang38
     apt:
       sources: *common_sources
@@ -92,6 +100,33 @@ matrix:
       compiler: "osmesa-node4-clang38-debug"
       env: BUILDTYPE=Debug _CXX=clang++-3.8 _CC=clang-3.8 WITH_OSMESA=1
       addons: *clang38
+      script:
+        - nvm install 4
+        - nvm use 4
+        - make node
+        - make test-node
+      after_script:
+        - ccache --show-stats
+        - ./platform/node/scripts/after_script.sh ${TRAVIS_JOB_NUMBER}
+
+    # EGL - Node - Clang 3.9 - Debug
+    - os: linux
+      sudo: required
+      dist: trusty
+      language: node
+      compiler: "egl-node4-clang39-debug"
+      env: BUILDTYPE=Debug _CXX=clang++-3.9 _CC=clang-3.9 WITH_EGL=1
+      addons: *clang39
+      before_script:
+        - mapbox_start_xvfb
+        - git submodule update --init
+        - (cd .mason && git checkout master && git pull)
+        - .mason/mason install clang++ 3.9.1
+        - export PATH=$(.mason/mason prefix clang++ 3.9.1)/bin:$PATH
+        - .mason/mason install cmake 3.7.1
+        - export PATH=$(.mason/mason prefix cmake 3.7.1)/bin:$PATH
+        - export CXXFLAGS="-fsanitize=address,integer,undefined"
+        - export LDFLAGS=-fsanitize=address,integer,undefined"
       script:
         - nvm install 4
         - nvm use 4
