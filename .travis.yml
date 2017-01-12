@@ -124,7 +124,7 @@ matrix:
         - export PATH=$(.mason/mason prefix clang++ 3.9.1)/bin:$PATH
         - .mason/mason install cmake 3.7.1
         - export PATH=$(.mason/mason prefix cmake 3.7.1)/bin:$PATH
-        - export CXXFLAGS="-fsanitize=address,integer,undefined"
+        - export CXXFLAGS="-Wno-undefined-var-template -fsanitize=address,integer,undefined"
         - export LDFLAGS="-fsanitize=address,integer,undefined"
       before_script:
         - mapbox_start_xvfb
@@ -152,7 +152,7 @@ matrix:
         - export PATH=$(.mason/mason prefix clang++ 3.9.1)/bin:$PATH
         - .mason/mason install cmake 3.7.1
         - export PATH=$(.mason/mason prefix cmake 3.7.1)/bin:$PATH
-        - export CXXFLAGS="-fsanitize=address,integer"
+        - export CXXFLAGS="-Wno-undefined-var-template -fsanitize=address,integer"
         - export LDFLAGS="-fsanitize=address,integer"
       before_script:
         - mapbox_start_xvfb
