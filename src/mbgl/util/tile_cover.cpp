@@ -127,8 +127,8 @@ std::vector<UnwrappedTileID> tileCover(const Point<double>& tl,
 
 } // namespace
 
-int32_t coveringZoomLevel(double zoom, SourceType type, uint16_t size) {
-    zoom += std::log(util::tileSize / size) / std::log(2);
+uint32_t coveringZoomLevel(double zoom, SourceType type, uint16_t size) {
+    zoom = std::max(0., zoom) + std::log(util::tileSize / size) / std::log(2);
     if (type == SourceType::Raster || type == SourceType::Video) {
         return ::round(zoom);
     } else {

@@ -185,6 +185,10 @@ public:
     std::vector<Feature> queryRenderedFeatures(const ScreenBox&,        const optional<std::vector<std::string>>& layerIDs = {});
     AnnotationIDs queryPointAnnotations(const ScreenBox&);
 
+    // Tile prefatching
+    void setFixedPrefetchZoom(uint32_t);
+    void setDynamicPrefetchZoom(uint32_t);
+
     // Memory
     void setSourceTileCacheSize(size_t);
     void onLowMemory();

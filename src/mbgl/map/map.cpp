@@ -95,6 +95,9 @@ public:
 
     std::unique_ptr<AsyncRequest> styleRequest;
 
+    uint32_t fixedPrefetchZoom = 0;
+    uint32_t dynamicPrefetchZoom = 0;
+
     size_t sourceCacheSize;
     bool loading = false;
 
@@ -251,7 +254,9 @@ void Map::Impl::render(View& view) {
                                        fileSource,
                                        mode,
                                        *annotationManager,
-                                       *style);
+                                       *style,
+                                       fixedPrefetchZoom,
+                                       dynamicPrefetchZoom);
 
     style->updateTiles(parameters);
 
@@ -1062,6 +1067,14 @@ void Map::setSourceTileCacheSize(size_t size) {
         impl->style->setSourceTileCacheSize(size);
         impl->backend.invalidate();
     }
+}
+
+void Map::setFixedPrefetchZoom(uint32_t zoom) {
+    impl->fixedPrefetchZoom = zoom;
+}
+
+void Map::setDynamicPrefetchZoom(uint32_t zoom) {
+    impl->dynamicPrefetchZoom = zoom;
 }
 
 void Map::onLowMemory() {

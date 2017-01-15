@@ -89,12 +89,15 @@ void Source::Impl::updateTiles(const UpdateParameters& parameters) {
     const Range<uint8_t> zoomRange = getZoomRange();
 
     // Determine the overzooming/underzooming amounts and required tiles.
-    int32_t overscaledZoom = util::coveringZoomLevel(parameters.transformState.getZoom(), type, tileSize);
-    int32_t tileZoom = overscaledZoom;
+    uint32_t overscaledZoom = util::coveringZoomLevel(parameters.transformState.getZoom(), type, tileSize);
+    uint32_t tileZoom = overscaledZoom;
+    uint32_t lowResolutionZoom = 0;
 
     std::vector<UnwrappedTileID> idealTiles;
+    std::vector<UnwrappedTileID> lowResolutionTiles;
+
     if (overscaledZoom >= zoomRange.min) {
-        int32_t idealZoom = std::min<int32_t>(zoomRange.max, overscaledZoom);
+        uint32_t idealZoom = std::min<int32_t>(zoomRange.max, overscaledZoom);
 
         // Make sure we're not reparsing overzoomed raster tiles.
         if (type == SourceType::Raster) {
@@ -102,6 +105,18 @@ void Source::Impl::updateTiles(const UpdateParameters& parameters) {
         }
 
         idealTiles = util::tileCover(parameters.transformState, idealZoom);
+
+        // Request lower zoom level tiles (if configure to do so) in an attempt
+        // to show something on the screen faster at the cost of a little of bandwidth.
+        lowResolutionZoom = parameters.fixedPrefetchZoom ?
+            parameters.fixedPrefetchZoom :
+            idealZoom - parameters.dynamicPrefetchZoom;
+
+        lowResolutionZoom = lowResolutionZoom < zoomRange.min ? zoomRange.min : lowResolutionZoom;
+
+        if (lowResolutionZoom < idealZoom) {
+            lowResolutionTiles = util::tileCover(parameters.transformState, lowResolutionZoom);
+        }
     }
 
     // Stores a list of all the tiles that we're definitely going to retain. There are two
@@ -111,8 +126,10 @@ void Source::Impl::updateTiles(const UpdateParameters& parameters) {
     std::set<OverscaledTileID> retain;
 
     auto retainTileFn = [&retain](Tile& tile, Resource::Necessity necessity) -> void {
-        retain.emplace(tile.id);
-        tile.setNecessity(necessity);
+        if (retain.find(tile.id) == retain.end()) {
+            retain.emplace(tile.id);
+            tile.setNecessity(necessity);
+        }
     };
     auto getTileFn = [this](const OverscaledTileID& tileID) -> Tile* {
         auto it = tiles.find(tileID);
@@ -136,8 +153,14 @@ void Source::Impl::updateTiles(const UpdateParameters& parameters) {
     };
 
     renderTiles.clear();
-    algorithm::updateRenderables(getTileFn, createTileFn, retainTileFn, renderTileFn,
-                                 idealTiles, zoomRange, tileZoom);
+
+    if (!lowResolutionTiles.empty()) {
+        algorithm::updateRenderables(getTileFn, createTileFn, retainTileFn,
+                [](const UnwrappedTileID&, Tile&) {}, lowResolutionTiles, zoomRange, lowResolutionZoom);
+    }
+
+    algorithm::updateRenderables(getTileFn, createTileFn, retainTileFn,
+            renderTileFn, idealTiles, zoomRange, tileZoom);
 
     if (type != SourceType::Annotations && cache.getSize() == 0) {
         size_t conservativeCacheSize =
