@@ -27,7 +27,7 @@ struct ToFeatureCollection {
         return { value };
     }
     feature_collection operator()(const geometry& value) const {
-#if !defined(__GNUC__) || __GNUC__ >= 5
+#if !defined(_WINDOWS) && (!defined(__GNUC__) || __GNUC__ >= 5)
         return { { value } };
 #else
         feature feat;

@@ -208,7 +208,7 @@ static Feature::geometry_type convertGeometry(const GeometryTileFeature& geometr
 }
 
 Feature convertFeature(const GeometryTileFeature& geometryTileFeature, const CanonicalTileID& tileID) {
-#if !defined(__GNUC__) || __GNUC__ >= 5
+#if !defined(_WINDOWS) && (!defined(__GNUC__) || __GNUC__ >= 5)
     Feature feature { convertGeometry(geometryTileFeature, tileID) };
 #else
     Feature feature;

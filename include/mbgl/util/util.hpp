@@ -14,7 +14,7 @@
 #endif
 
 // GCC 4.9 compatibility
-#if !defined(__GNUC__) || __GNUC__ >= 5
+#if !defined(_WINDOWS) && (!defined(__GNUC__) || __GNUC__ >= 5)
 #define MBGL_CONSTEXPR constexpr
 #else
 #define MBGL_CONSTEXPR inline

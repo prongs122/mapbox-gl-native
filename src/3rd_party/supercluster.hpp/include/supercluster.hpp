@@ -123,7 +123,7 @@ public:
 
             TilePoint point(::round(this->options.extent * (c.pos.x * z2 - x)),
                             ::round(this->options.extent * (c.pos.y * z2 - y)));
-#if !defined(__GNUC__) || __GNUC__ >= 5
+#if !defined(_WINDOWS) && (!defined(__GNUC__) || __GNUC__ >= 5)
             TileFeature feature { point };
 #else
             TileFeature feature;

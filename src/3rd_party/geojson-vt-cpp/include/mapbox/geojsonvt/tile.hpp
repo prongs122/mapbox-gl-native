@@ -95,7 +95,7 @@ private:
     }
 
     void addFeature(const vt_point& point, const property_map& props) {
-#if !defined(__GNUC__) || __GNUC__ >= 5
+#if !defined(_WINDOWS) && (!defined(__GNUC__) || __GNUC__ >= 5)
         tile.features.push_back({ transform(point), props });
 #else
         mapbox::geometry::feature<int16_t> feature;
@@ -108,7 +108,7 @@ private:
     void addFeature(const vt_line_string& line, const property_map& props) {
         const auto new_line = transform(line);
         if (!new_line.empty()) {
-#if !defined(__GNUC__) || __GNUC__ >= 5
+#if !defined(_WINDOWS) && (!defined(__GNUC__) || __GNUC__ >= 5)
             tile.features.push_back({ std::move(new_line), props });
 #else
             mapbox::geometry::feature<int16_t> feature;
@@ -122,7 +122,7 @@ private:
     void addFeature(const vt_polygon& polygon, const property_map& props) {
         const auto new_polygon = transform(polygon);
         if (!new_polygon.empty()) {
-#if !defined(__GNUC__) || __GNUC__ >= 5
+#if !defined(_WINDOWS) && (!defined(__GNUC__) || __GNUC__ >= 5)
             tile.features.push_back({ std::move(new_polygon), props });
 #else
             mapbox::geometry::feature<int16_t> feature;
@@ -150,7 +150,7 @@ private:
         case 0:
             break;
         case 1:
-#if !defined(__GNUC__) || __GNUC__ >= 5
+#if !defined(_WINDOWS) && (!defined(__GNUC__) || __GNUC__ >= 5)
             tile.features.push_back({ std::move(new_multi[0]), props });
 #else
             {
@@ -162,7 +162,7 @@ private:
 #endif
             break;
         default:
-#if !defined(__GNUC__) || __GNUC__ >= 5
+#if !defined(_WINDOWS) && (!defined(__GNUC__) || __GNUC__ >= 5)
             tile.features.push_back({ std::move(new_multi), props });
 #else
             {

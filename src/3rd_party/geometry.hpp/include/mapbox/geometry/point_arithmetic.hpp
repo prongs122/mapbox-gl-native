@@ -1,7 +1,7 @@
 #pragma once
 
 // GCC 4.9 compatibility
-#if !defined(__GNUC__) || __GNUC__ >= 5
+#if !defined(_WINDOWS) && (!defined(__GNUC__) || __GNUC__ >= 5)
 #define GEOMETRYHPP_CONSTEXPR constexpr
 #else
 #define GEOMETRYHPP_CONSTEXPR inline
